@@ -1,0 +1,6 @@
+@SOA_CA2_Cian_Nojus_HostAddress = http://localhost:5031
+
+GET {{SOA_CA2_Cian_Nojus_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
