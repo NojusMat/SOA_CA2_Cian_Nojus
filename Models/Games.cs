@@ -2,7 +2,7 @@
 {
     public class Games
     {
-        public int game_id { get; set; } // Primary Key
+        public int Id { get; set; } // Primary Key
         public string title { get; set; }
         public string genre { get; set; }
         public int release_year { get; set; }

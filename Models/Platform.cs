@@ -2,7 +2,7 @@
 {
     public class Platform
     {
-        public int platform_id { get; set; } // Primary Key
+        public int Id { get; set; } // Primary Key
         public string name { get; set; }
         public string manufacturer { get; set; }
     }
