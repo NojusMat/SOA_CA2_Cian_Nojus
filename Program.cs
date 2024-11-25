@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SOA_CA2_Cian_NojusContext>(options =>
@@ -22,6 +23,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ApiKeyAuthMiddleware>();
+
 
 app.UseAuthorization();
 
