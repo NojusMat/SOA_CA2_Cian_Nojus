@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using SOA_CA2_Cian_Nojus.Authentication;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
     [ApiController]
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]  //   Add this line
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
