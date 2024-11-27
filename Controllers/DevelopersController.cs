@@ -8,12 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
 using SOA_CA2_Cian_Nojus.Models;
+using SOA_CA2_Cian_Nojus.DTOs;
+
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(ApiKeyAuthFilter))]  //   Add this line
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class DevelopersController : ControllerBase
     {
         private readonly SOA_CA2_Cian_NojusContext _context;
@@ -25,36 +27,49 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
         // GET: api/Developers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Developer>>> GetDeveloper()
+        public async Task<ActionResult<IEnumerable<DeveloperDTO>>> GetDeveloper()
         {
-            return await _context.Developer.ToListAsync();
+            var developers = await _context.Developer.Include(g => g.Games).ToListAsync();
+            return developers.Select(g => new DeveloperDTO
+            {
+                Id = g.Id,
+                name = g.name,
+                country = g.country,
+                Games = g.Games.Select(g => g.title).ToList()
+            }).ToList();
         }
 
         // GET: api/Developers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Developer>> GetDeveloper(int id)
+        public async Task<ActionResult<DeveloperDTO>> GetDeveloper(int id)
         {
-            var developer = await _context.Developer.FindAsync(id);
+            var developer = await _context.Developer.Include(g => g.Games).FirstOrDefaultAsync(d => d.Id == id);
 
             if (developer == null)
             {
                 return NotFound();
             }
 
-            return developer;
+            return new DeveloperDTO
+            {
+                Id = developer.Id,
+                name = developer.name,
+                country = developer.country,
+                Games = developer.Games.Select(g => g.title).ToList()
+            };
         }
 
         // PUT: api/Developers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeveloper(int id, Developer developer)
+        public async Task<IActionResult> PutDeveloper(int id, DeveloperDTO developerDTO)
         {
-            if (id != developer.Id)
+            if (id != developerDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(developer).State = EntityState.Modified;
+            _context.Entry(developerDTO).State = EntityState.Modified;
 
             try
             {
@@ -78,12 +93,19 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         // POST: api/Developers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Developer>> PostDeveloper(Developer developer)
+        public async Task<ActionResult<DeveloperDTO>> PostDeveloper(DeveloperDTO developerDTO)
         {
+            var developer = new Developer
+            {
+                name = developerDTO.name,
+                country = developerDTO.country
+            };
+
             _context.Developer.Add(developer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDeveloper", new { id = developer.Id }, developer);
+            developerDTO.Id = developer.Id;
+            return CreatedAtAction("GetDeveloper", new { id = developer.Id }, developerDTO);
         }
 
         // DELETE: api/Developers/5

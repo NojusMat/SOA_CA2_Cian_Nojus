@@ -5,5 +5,7 @@
         public int Id { get; set; } // Primary Key
         public string name { get; set; }
         public string manufacturer { get; set; }
+
+        public ICollection<GamePlatform> GamePlatforms { get; set; } // Navigation Property
     }
 }
