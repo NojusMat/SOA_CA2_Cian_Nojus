@@ -9,6 +9,17 @@ builder.Services.AddDbContext<SOA_CA2_Cian_NojusContext>(options =>
 
 // Add services to the container.
 
+
+// The code used to allow CORS was taken from the following link: https://www.c-sharpcorner.com/article/cross-origin-resource-sharing-cors-in-net-8/#:~:text=Cross-Origin%20Resource%20Sharing%20%28CORS%29%20in%20.NET%208%201,Common%20Issues%20and%20Troubleshooting%20...%208%20Conclusion%20
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("CustomCORS",
+		builder => builder.AllowAnyOrigin()
+						  .AllowAnyMethod()
+						  .AllowAnyHeader());
+});
+
+
 builder.Services.AddControllers(/*x => x.Filters.Add<ApiKeyAuthFilter>()*/);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,9 +62,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("CustomCORS");
+
 app.UseHttpsRedirection();
 
- app.UseMiddleware<ApiKeyAuthMiddleware>();
+app.UseMiddleware<ApiKeyAuthMiddleware>();
 
 
 app.UseAuthorization();
