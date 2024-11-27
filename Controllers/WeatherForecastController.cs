@@ -4,7 +4,7 @@ using SOA_CA2_Cian_Nojus.Authentication;
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
     [ApiController]
-    [ServiceFilter(typeof(ApiKeyAuthFilter))]  //   Add this line
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {

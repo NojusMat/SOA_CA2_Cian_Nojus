@@ -8,5 +8,8 @@
         public int release_year { get; set; }
         public int developer_id { get; set; } // Foreign Key
 
+        public Developer Developer { get; set; } // Navigation Property
+
+        public ICollection<GamePlatform> GamePlatforms { get; set; } // Navigation Property
     }
 }

@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
 using SOA_CA2_Cian_Nojus.Models;
+using SOA_CA2_Cian_Nojus.DTOs;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(ApiKeyAuthFilter))]  //   Add this line
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class PlatformsController : ControllerBase
     {
         private readonly SOA_CA2_Cian_NojusContext _context;
@@ -27,12 +28,23 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Platform>>> GetPlatform()
         {
-            return await _context.Platform.ToListAsync();
+
+            var platform = await _context.Platform.ToListAsync();
+
+            var platformDTO = platform.Select(p => new Platform
+            {
+                Id = p.Id,
+                name = p.name,
+                manufacturer = p.manufacturer
+            }).ToList();
+
+            return platformDTO;
+
         }
 
         // GET: api/Platforms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Platform>> GetPlatform(int id)
+        public async Task<ActionResult<PlatformDTO>> GetPlatform(int id)
         {
             var platform = await _context.Platform.FindAsync(id);
 
@@ -41,18 +53,34 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return NotFound();
             }
 
-            return platform;
+            var platformDTO = new PlatformDTO
+            {
+                Id = platform.Id,
+                name = platform.name,
+                manufacturer = platform.manufacturer
+            };
+
+            return platformDTO;
         }
 
         // PUT: api/Platforms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlatform(int id, Platform platform)
+        public async Task<IActionResult> PutPlatform(int id, PlatformDTO platformDTO)
         {
-            if (id != platform.Id)
+            if (id != platformDTO.Id)
             {
                 return BadRequest();
             }
+
+            var platform = await _context.Platform.FindAsync(id);
+            if (platform == null)
+            {
+                return NotFound();
+            }
+
+            platform.name = platformDTO.name;
+            platform.manufacturer = platformDTO.manufacturer;
 
             _context.Entry(platform).State = EntityState.Modified;
 
@@ -78,12 +106,20 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         // POST: api/Platforms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Platform>> PostPlatform(Platform platform)
+        public async Task<ActionResult<PlatformDTO>> PostPlatform(PlatformDTO platformDTO)
         {
+            var platform = new Platform
+            {
+                name = platformDTO.name,
+                manufacturer = platformDTO.manufacturer
+            };
+
             _context.Platform.Add(platform);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPlatform", new { id = platform.Id }, platform);
+
+            platformDTO.Id = platform.Id;
+            return CreatedAtAction("GetPlatform", new { id = platform.Id }, platformDTO);
         }
 
         // DELETE: api/Platforms/5

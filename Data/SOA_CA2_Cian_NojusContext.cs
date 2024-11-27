@@ -18,8 +18,28 @@ namespace SOA_CA2_Cian_Nojus.Data
         public DbSet<SOA_CA2_Cian_Nojus.Models.Developer> Developer { get; set; } = default!;
         public DbSet<SOA_CA2_Cian_Nojus.Models.Platform> Platform { get; set; } = default!;
 
+        public DbSet<GamePlatform> GamePlatform { get; set; }
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<Games>().HasOne(g => g.Developer)
+                .WithMany(d => d.Games)
+                .HasForeignKey(g => g.developer_id)
+                .IsRequired();
+
+            modelBuilder.Entity<GamePlatform>().
+                HasKey(gp => new { gp.GameId, gp.PlatformId });
+
+            modelBuilder.Entity<GamePlatform>().
+                HasOne(gp => gp.Game).
+                WithMany(g => g.GamePlatforms).
+                HasForeignKey(gp => gp.GameId);
+
+            modelBuilder.Entity<GamePlatform>().
+                HasOne(gp => gp.Platform).
+                WithMany(p => p.GamePlatforms).
+                HasForeignKey(gp => gp.PlatformId);
 
             modelBuilder.Entity<Games>().HasData(
                 new Games
@@ -69,6 +89,7 @@ namespace SOA_CA2_Cian_Nojus.Data
                     genre = "Racing",
                     release_year = 2020,
                     developer_id = 2,
+
                 }
             );
 
@@ -101,6 +122,16 @@ namespace SOA_CA2_Cian_Nojus.Data
                     manufacturer = "Nintendo"
                 }
                 );
+
+            modelBuilder.Entity<GamePlatform>().HasData(
+             new GamePlatform { GameId = 1, PlatformId = 1 },
+             new GamePlatform { GameId = 2, PlatformId = 1 },
+               new GamePlatform { GameId = 3, PlatformId = 1 },
+                new GamePlatform { GameId = 3, PlatformId = 2 },
+             new GamePlatform { GameId = 4, PlatformId = 2 }, 
+             new GamePlatform { GameId = 5, PlatformId = 2 },
+               new GamePlatform { GameId = 6, PlatformId = 2 }
+         );
             base.OnModelCreating(modelBuilder);
         }
     }
