@@ -1,4 +1,4 @@
-﻿namespace SOA_CA2_Cian_Nojus.Authentication
+namespace SOA_CA2_Cian_Nojus.Authentication
 {
     public class ApiKeyAuthMiddleware
     {
