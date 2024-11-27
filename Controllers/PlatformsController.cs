@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
 using SOA_CA2_Cian_Nojus.Models;
 
@@ -12,6 +13,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]  //   Add this line
     public class PlatformsController : ControllerBase
     {
         private readonly SOA_CA2_Cian_NojusContext _context;
