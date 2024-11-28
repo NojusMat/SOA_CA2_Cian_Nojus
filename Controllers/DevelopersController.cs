@@ -23,7 +23,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         public DevelopersController(SOA_CA2_Cian_NojusContext context)
         {
             _context = context;
-        }
+			context.Database.EnsureCreated();
+		}
 
         // GET: api/Developers
         [HttpGet]
