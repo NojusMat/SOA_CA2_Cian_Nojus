@@ -22,7 +22,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         public PlatformsController(SOA_CA2_Cian_NojusContext context)
         {
             _context = context;
-        }
+			context.Database.EnsureCreated();
+		}
 
         // GET: api/Platforms
         [HttpGet]
