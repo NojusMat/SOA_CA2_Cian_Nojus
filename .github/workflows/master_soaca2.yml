@@ -53,4 +53,4 @@ jobs:
           app-name: 'SOACA2'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E1389D4A6ECC4FCAB8358272CCCE56F3 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BE53E14F5D304A598E5D4285FC569DE8 }}
