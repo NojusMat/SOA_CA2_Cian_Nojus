@@ -14,7 +14,7 @@ using Asp.Versioning;
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class PlatformsController : ControllerBase
     {
@@ -28,16 +28,17 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
         // GET: api/Platforms
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Platform>>> GetPlatform()
+        public async Task<ActionResult<IEnumerable<PlatformDTO>>> GetPlatform()
         {
 
-            var platform = await _context.Platform.ToListAsync();
+            var platform = await _context.Platform.Include(gp => gp.GamePlatforms).ThenInclude(g => g.Game).ToListAsync();
 
-            var platformDTO = platform.Select(p => new Platform
+            var platformDTO = platform.Select(p => new PlatformDTO
             {
                 Id = p.Id,
                 name = p.name,
-                manufacturer = p.manufacturer
+                manufacturer = p.manufacturer,
+                Games = p.GamePlatforms.Select(p => p.Game.title).ToList()
             }).ToList();
 
             return platformDTO;
@@ -48,7 +49,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PlatformDTO>> GetPlatform(int id)
         {
-            var platform = await _context.Platform.FindAsync(id);
+            var platform = await _context.Platform.Include(gp => gp.GamePlatforms).ThenInclude(g => g.Game).FirstOrDefaultAsync(d => d.Id == id);
 
             if (platform == null)
             {
@@ -59,7 +60,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             {
                 Id = platform.Id,
                 name = platform.name,
-                manufacturer = platform.manufacturer
+                manufacturer = platform.manufacturer,
+                Games = platform.GamePlatforms.Select(p => p.Game.title).ToList()
             };
 
             return platformDTO;
@@ -83,6 +85,20 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             platform.name = platformDTO.name;
             platform.manufacturer = platformDTO.manufacturer;
+
+            _context.GamePlatform.RemoveRange(platform.GamePlatforms);
+            if(platformDTO.Games != null)
+            {
+                foreach (var gameDTO in platformDTO.Games)
+                {
+                    var game = await _context.Games.FindAsync(gameDTO);
+                    if (game == null)
+                    {
+                        return NotFound();
+                    }
+                    platform.GamePlatforms.Add(new GamePlatform { Game = game, Platform = platform });
+                }
+            }
 
             _context.Entry(platform).State = EntityState.Modified;
 
@@ -119,20 +135,43 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             _context.Platform.Add(platform);
             await _context.SaveChangesAsync();
 
+            if (platformDTO.Games != null)
+            {
+                foreach (var gameDTO in platformDTO.Games)
+                {
+                    var game = await _context.Games.FindAsync(gameDTO);
+                    if (game != null)
+                    {
+                        platform.GamePlatforms.Add(new GamePlatform { Game = game, Platform = platform });
+                    }
+                }
+            }
 
-            platformDTO.Id = platform.Id;
-            return CreatedAtAction("GetPlatform", new { id = platform.Id }, platformDTO);
+            await _context.SaveChangesAsync();
+
+
+            var createdPlatformDTO = new PlatformDTO
+            {
+                Id = platform.Id,
+                name = platform.name,
+                manufacturer = platform.manufacturer,
+            };
+
+            return CreatedAtAction("GetPlatform", new { id = platform.Id }, createdPlatformDTO);
         }
 
         // DELETE: api/Platforms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlatform(int id)
         {
-            var platform = await _context.Platform.FindAsync(id);
+            var platform = await _context.Platform.Include(gp => gp.GamePlatforms).FirstOrDefaultAsync(p => p.Id == id);
+
             if (platform == null)
             {
                 return NotFound();
             }
+
+            _context.GamePlatform.RemoveRange(platform.GamePlatforms);
 
             _context.Platform.Remove(platform);
             await _context.SaveChangesAsync();
