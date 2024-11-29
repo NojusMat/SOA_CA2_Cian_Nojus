@@ -10,3 +10,6 @@
 
 ## Many to many relationship
 ### https://medium.com/@ti.ka/many-to-many-relationship-done-right-in-the-entity-framework-multi-clients-users-130ac185f667
+
+## Nuget verisioning
+### https://www.nuget.org/packages/Asp.Versioning.Mvc/

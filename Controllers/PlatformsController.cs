@@ -9,11 +9,12 @@ using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
 using SOA_CA2_Cian_Nojus.Models;
 using SOA_CA2_Cian_Nojus.DTOs;
+using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class PlatformsController : ControllerBase
     {
