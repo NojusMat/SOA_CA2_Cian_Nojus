@@ -8,6 +8,6 @@
         public int release_year { get; set; }
         public int developerId { get; set; }
 
-        public List<PlatformDTO> Platforms { get; set; }
+        public List<string> Platforms { get; set; }
     }
 }

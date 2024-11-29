@@ -5,5 +5,7 @@
         public int Id { get; set; }
         public string name { get; set; }
         public string manufacturer { get; set; }
+
+        public List<string> Games { get; set; }
     }
 }

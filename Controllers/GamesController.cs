@@ -9,12 +9,13 @@ using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
 using SOA_CA2_Cian_Nojus.Models;
 using SOA_CA2_Cian_Nojus.DTOs;
+using Asp.Versioning;
 
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("2.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class GamesController : ControllerBase
     {
@@ -39,13 +40,9 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 genre = d.genre,
                 release_year = d.release_year,
                 developerId = d.developer_id,
-                Platforms = d.GamePlatforms.Select(gp => new PlatformDTO {
-                    Id = gp.Platform.Id,
-                    name = gp.Platform.name,
-                    manufacturer = gp.Platform.manufacturer
-                }).ToList()
-
+                Platforms = d.GamePlatforms.Select(d => d.Platform.name).ToList()
             }).ToList();
+
             return gameDTO;
         }
 
@@ -68,12 +65,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 genre = game.genre,
                 release_year = game.release_year,
                 developerId = game.developer_id,
-                Platforms = game.GamePlatforms.Select(gp => new PlatformDTO
-                {
-                    Id = gp.Platform.Id,
-                    name = gp.Platform.name,
-                    manufacturer = gp.Platform.manufacturer
-                }).ToList()
+                Platforms = game.GamePlatforms.Select(d => d.Platform.name).ToList()
             };
 
             return gameDTO;
@@ -106,7 +98,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             {
                 foreach (var platformDTO in gameDTO.Platforms)
                 {
-                    var platform = await _context.Platform.FindAsync(platformDTO.Id);
+                    var platform = await _context.Platform.FindAsync(platformDTO);
                     if (platform != null)
                     {
                         _context.GamePlatform.Add(new GamePlatform
@@ -159,7 +151,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             {
                 foreach (var platformDTO in gameDTO.Platforms)
                 {
-                    var platform = await _context.Platform.FindAsync(platformDTO.Id);
+                    var platform = await _context.Platform.FindAsync(platformDTO);
                     if (platform != null)
                     {
                         _context.GamePlatform.Add(new GamePlatform
@@ -189,7 +181,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGames(int id)
         {
-            var game = await _context.Games.Include(g => g.GamePlatforms).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _context.Games.Include(gp => gp.GamePlatforms).FirstOrDefaultAsync(g => g.Id == id);
 
 
             if (game == null)
