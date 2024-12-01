@@ -40,7 +40,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 genre = d.genre,
                 release_year = d.release_year,
                 developerId = d.developer_id,
-                Platforms = d.GamePlatforms.Select(d => d.Platform.name).ToList()
+                Platforms = d.GamePlatforms.Select(d => d.Platform.Id).ToList()
             }).ToList();
 
             return gameDTO;
@@ -65,7 +65,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 genre = game.genre,
                 release_year = game.release_year,
                 developerId = game.developer_id,
-                Platforms = game.GamePlatforms.Select(d => d.Platform.name).ToList()
+                Platforms = game.GamePlatforms.Select(d => d.Platform.Id).ToList()
             };
 
             return gameDTO;
@@ -157,7 +157,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                         _context.GamePlatform.Add(new GamePlatform
                         {
                             GameId = game.Id,
-                                PlatformId = platform.Id
+                            PlatformId = platform.Id
                         });
                     }
                 }
