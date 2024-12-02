@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SOA_CA2_Cian_Nojus.Models;
 
+// Secure .env file was implemented with help from this reference: https://dev.to/sudha533/how-to-create-a-env-file-in-an-aspnet-core-web-api-project-and-use-its-values-in-the-application-configuration-fam
+using DotNetEnv;
+
+
 namespace SOA_CA2_Cian_Nojus.Data
 {
     public class SOA_CA2_Cian_NojusContext : DbContext
@@ -17,11 +21,13 @@ namespace SOA_CA2_Cian_Nojus.Data
         public DbSet<SOA_CA2_Cian_Nojus.Models.Games> Games { get; set; } = default!;
         public DbSet<SOA_CA2_Cian_Nojus.Models.Developer> Developer { get; set; } = default!;
         public DbSet<SOA_CA2_Cian_Nojus.Models.Platform> Platform { get; set; } = default!;
+		public DbSet<SOA_CA2_Cian_Nojus.Models.User> User { get; set; } = default!;
 
-        public DbSet<GamePlatform> GamePlatform { get; set; }
+		public DbSet<GamePlatform> GamePlatform { get; set; }
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DotNetEnv.Env.Load();
 
             modelBuilder.Entity<Games>().HasOne(g => g.Developer)
                 .WithMany(d => d.Games)
@@ -132,7 +138,23 @@ namespace SOA_CA2_Cian_Nojus.Data
              new GamePlatform { GameId = 5, PlatformId = 2 },
                new GamePlatform { GameId = 6, PlatformId = 2 }
          );
-            base.OnModelCreating(modelBuilder);
+
+			modelBuilder.Entity<User>().HasData(
+				new User
+				{
+					Id = 1,
+					email = Environment.GetEnvironmentVariable("ADMINISTRATOR__EMAIL"),
+					isAdministrator = true
+				},
+				new User
+				{
+					Id = 2,
+					email = Environment.GetEnvironmentVariable("USER__EMAIL"),
+					isAdministrator = false
+				}
+			);
+
+			base.OnModelCreating(modelBuilder);
         }
     }
 }
