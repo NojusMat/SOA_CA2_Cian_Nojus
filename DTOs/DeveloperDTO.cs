@@ -2,10 +2,10 @@
 {
     public class DeveloperDTO
     {
-        public int Id { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public string country { get; set; }
 
-        public List<string>? Games { get; set; } = null;
+        public List<string>? games { get; set; } = null;
     }
 }

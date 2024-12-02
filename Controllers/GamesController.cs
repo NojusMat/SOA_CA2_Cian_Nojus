@@ -35,12 +35,12 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             var gameDTO = games.Select(d => new GameDTO
             {
-                Id = d.Id,
+                id = d.Id,
                 title = d.title,
                 genre = d.genre,
                 release_year = d.release_year,
-                developerId = d.developer_id,
-                Platforms = d.GamePlatforms.Select(d => d.Platform.Id).ToList()
+                developer_id = d.developer_id,
+                platforms = d.GamePlatforms.Select(d => d.Platform.Id).ToList()
             }).ToList();
 
             return gameDTO;
@@ -60,12 +60,12 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             var gameDTO = new GameDTO
             {
-                Id = game.Id,
+                id = game.Id,
                 title = game.title,
                 genre = game.genre,
                 release_year = game.release_year,
-                developerId = game.developer_id,
-                Platforms = game.GamePlatforms.Select(d => d.Platform.Id).ToList()
+                developer_id = game.developer_id,
+                platforms = game.GamePlatforms.Select(d => d.Platform.Id).ToList()
             };
 
             return gameDTO;
@@ -76,7 +76,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGames(int id, GameDTO gameDTO)
         {
-            if (id != gameDTO.Id)
+            if (id != gameDTO.id)
             {
                 return BadRequest();
             }
@@ -89,14 +89,14 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             game.title = gameDTO.title;
             game.genre = gameDTO.genre;
             game.release_year = gameDTO.release_year;
-            game.developer_id = gameDTO.developerId;
+            game.developer_id = gameDTO.developer_id;
 
 
             _context.GamePlatform.RemoveRange(game.GamePlatforms);
 
-            if(gameDTO.Platforms != null)
+            if(gameDTO.platforms != null)
             {
-                foreach (var platformDTO in gameDTO.Platforms)
+                foreach (var platformDTO in gameDTO.platforms)
                 {
                     var platform = await _context.Platform.FindAsync(platformDTO);
                     if (platform != null)
@@ -141,15 +141,15 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 title = gameDTO.title,
                 genre = gameDTO.genre,
                 release_year = gameDTO.release_year,
-                developer_id = gameDTO.developerId,
+                developer_id = gameDTO.developer_id,
             };
 
             _context.Games.Add(game);
             await _context.SaveChangesAsync();
 
-            if (gameDTO.Platforms != null)
+            if (gameDTO.platforms != null)
             {
-                foreach (var platformDTO in gameDTO.Platforms)
+                foreach (var platformDTO in gameDTO.platforms)
                 {
                     var platform = await _context.Platform.FindAsync(platformDTO);
                     if (platform != null)
@@ -167,11 +167,11 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             var createdGameDTO = new GameDTO
             {
-                Id = game.Id,
+                id = game.Id,
                 title = game.title,
                 genre = game.genre,
                 release_year = game.release_year,
-                developerId = game.developer_id,
+                developer_id = game.developer_id,
             };
 
             return CreatedAtAction("GetGames", new { id = game.Id }, createdGameDTO);

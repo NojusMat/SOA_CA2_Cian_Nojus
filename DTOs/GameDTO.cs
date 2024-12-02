@@ -2,12 +2,12 @@
 {
     public class GameDTO
     {
-        public int Id { get; set; }
+        public int id { get; set; }
         public string title { get; set; }
         public string genre { get; set; }
         public int release_year { get; set; }
-        public int developerId { get; set; }
+        public int developer_id { get; set; }
 
-        public List<int>? Platforms { get; set; } = null;
+        public List<int>? platforms { get; set; } = null;
     }
 }
