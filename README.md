@@ -13,3 +13,6 @@
 
 ## Nuget verisioning
 ### https://www.nuget.org/packages/Asp.Versioning.Mvc/
+
+## Rate limiting
+### https://medium.com/@solomongetachew112/implementing-rate-limiting-in-asp-net-core-web-api-net-8-da7f82442fe0
