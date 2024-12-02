@@ -10,7 +10,7 @@ using SOA_CA2_Cian_Nojus.Models;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<User>> GetUserById(int id)
         {
             var user = await _context.User.FindAsync(id);
 
@@ -43,9 +43,23 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             return user;
         }
 
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+		// GET: api/users/login/burneraccount@gmail.com
+		[HttpGet("login/{email}")]
+		public async Task<ActionResult<User>> GetUserByEmail(string email)
+		{
+			// code to find an item by something other than ID was created with help from: https://learn.microsoft.com/en-us/ef/ef6/querying/
+			var user = await _context.User.Where(u => u.email == email).FirstOrDefaultAsync();
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+			return user;
+		}
+
+		// PUT: api/Users/5
+		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
             if (id != user.Id)
