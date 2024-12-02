@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using SOA_CA2_Cian_Nojus.Models;
 
 // Secure .env file was implemented with help from this reference: https://dev.to/sudha533/how-to-create-a-env-file-in-an-aspnet-core-web-api-project-and-use-its-values-in-the-application-configuration-fam
@@ -136,19 +137,19 @@ namespace SOA_CA2_Cian_Nojus.Data
              new GamePlatform { GameId = 4, PlatformId = 2 }, 
              new GamePlatform { GameId = 5, PlatformId = 2 },
                new GamePlatform { GameId = 6, PlatformId = 2 }
-         );
+            );
 
 			modelBuilder.Entity<User>().HasData(
 				new User
 				{
 					Id = 1,
-					email = Environment.GetEnvironmentVariable("ADMINISTRATOR__EMAIL"),
-					isAdministrator = true
+					email = "cianashby1337@gmail.com",
+                    isAdministrator = true
 				},
 				new User
 				{
 					Id = 2,
-					email = Environment.GetEnvironmentVariable("USER__EMAIL"),
+					email = "nojusmat1@gmail.com",
 					isAdministrator = false
 				}
 			);
