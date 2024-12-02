@@ -14,7 +14,7 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/developers")]
     [ApiVersion("1.0")]
     [ApiController]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]

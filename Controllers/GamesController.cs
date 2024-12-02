@@ -14,7 +14,7 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/games")]
     [ApiVersion("2.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class GamesController : ControllerBase
