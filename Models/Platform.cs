@@ -6,6 +6,6 @@
         public string name { get; set; }
         public string manufacturer { get; set; }
 
-        public ICollection<GamePlatform> GamePlatforms { get; set; } // Navigation Property
+        public ICollection<GamePlatform> GamePlatforms { get; } = []; // Navigation Property
     }
 }

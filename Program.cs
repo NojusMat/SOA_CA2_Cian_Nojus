@@ -4,11 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SOA_CA2_Cian_Nojus.Authentication;
 using SOA_CA2_Cian_Nojus.Data;
+using DotNetEnv;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SOA_CA2_Cian_NojusContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SOA_CA2_Cian_NojusContext") ?? throw new InvalidOperationException("Connection string 'SOA_CA2_Cian_NojusContext' not found.")));
 
 // Add services to the container.
+DotNetEnv.Env.Load();
+
 
 
 // The code used to allow CORS was taken from the following link: https://www.c-sharpcorner.com/article/cross-origin-resource-sharing-cors-in-net-8/#:~:text=Cross-Origin%20Resource%20Sharing%20%28CORS%29%20in%20.NET%208%201,Common%20Issues%20and%20Troubleshooting%20...%208%20Conclusion%20
