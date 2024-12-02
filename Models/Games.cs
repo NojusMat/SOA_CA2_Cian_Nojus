@@ -10,6 +10,6 @@
 
         public Developer Developer { get; set; } // Navigation Property
 
-        public ICollection<GamePlatform> GamePlatforms { get; set; } // Navigation Property
+        public ICollection<GamePlatform> GamePlatforms { get; } = []; // Navigation Property
     }
 }

@@ -14,7 +14,7 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/developers")]
     [ApiVersion("1.0")]
     [ApiController]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
@@ -35,10 +35,10 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             var developers = await _context.Developer.Include(g => g.Games).ToListAsync();
             return developers.Select(g => new DeveloperDTO
             {
-                Id = g.Id,
+                id = g.Id,
                 name = g.name,
                 country = g.country,
-                Games = g.Games.Select(g => g.title).ToList()
+                games = g.Games.Select(g => g.title).ToList()
             }).ToList();
         }
 
@@ -55,10 +55,10 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             return new DeveloperDTO
             {
-                Id = developer.Id,
+                id = developer.Id,
                 name = developer.name,
                 country = developer.country,
-                Games = developer.Games.Select(g => g.title).ToList()
+                games = developer.Games.Select(g => g.title).ToList()
             };
         }
 
@@ -67,7 +67,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeveloper(int id, DeveloperDTO developerDTO)
         {
-            if (id != developerDTO.Id)
+            if (id != developerDTO.id)
             {
                 return BadRequest();
             }
@@ -107,7 +107,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             _context.Developer.Add(developer);
             await _context.SaveChangesAsync();
 
-            developerDTO.Id = developer.Id;
+            developerDTO.id = developer.Id;
             return CreatedAtAction("GetDeveloper", new { id = developer.Id }, developerDTO);
         }
 

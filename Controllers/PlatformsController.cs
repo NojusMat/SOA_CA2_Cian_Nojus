@@ -13,7 +13,7 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/platforms")]
     [ApiVersion("2.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class PlatformsController : ControllerBase
@@ -35,10 +35,10 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             var platformDTO = platform.Select(p => new PlatformDTO
             {
-                Id = p.Id,
+                id = p.Id,
                 name = p.name,
                 manufacturer = p.manufacturer,
-                Games = p.GamePlatforms.Select(p => p.Game.title).ToList()
+                games = p.GamePlatforms.Select(p => p.Game.title).ToList()
             }).ToList();
 
             return platformDTO;
@@ -58,10 +58,10 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             var platformDTO = new PlatformDTO
             {
-                Id = platform.Id,
+                id = platform.Id,
                 name = platform.name,
                 manufacturer = platform.manufacturer,
-                Games = platform.GamePlatforms.Select(p => p.Game.title).ToList()
+                games = platform.GamePlatforms.Select(p => p.Game.title).ToList()
             };
 
             return platformDTO;
@@ -72,7 +72,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPlatform(int id, PlatformDTO platformDTO)
         {
-            if (id != platformDTO.Id)
+            if (id != platformDTO.id)
             {
                 return BadRequest();
             }
@@ -87,9 +87,9 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             platform.manufacturer = platformDTO.manufacturer;
 
             _context.GamePlatform.RemoveRange(platform.GamePlatforms);
-            if(platformDTO.Games != null)
+            if(platformDTO.games != null)
             {
-                foreach (var gameDTO in platformDTO.Games)
+                foreach (var gameDTO in platformDTO.games)
                 {
                     var game = await _context.Games.FindAsync(gameDTO);
                     if (game == null)
@@ -135,9 +135,9 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             _context.Platform.Add(platform);
             await _context.SaveChangesAsync();
 
-            if (platformDTO.Games != null)
+            if (platformDTO.games != null)
             {
-                foreach (var gameDTO in platformDTO.Games)
+                foreach (var gameDTO in platformDTO.games)
                 {
                     var game = await _context.Games.FindAsync(gameDTO);
                     if (game != null)
@@ -152,7 +152,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
             var createdPlatformDTO = new PlatformDTO
             {
-                Id = platform.Id,
+                id = platform.Id,
                 name = platform.name,
                 manufacturer = platform.manufacturer,
             };

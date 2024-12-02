@@ -3,9 +3,9 @@
     public class GamePlatform
     {
         public int GameId { get; set; }
-        public Games Game { get; set; }
+        public Games Game { get; set; } = null!;
 
         public int PlatformId { get; set; }
-        public Platform Platform { get; set; }
+        public Platform Platform { get; set; } = null!;
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SOA_CA2_Cian_Nojus.Models;
 
 // Secure .env file was implemented with help from this reference: https://dev.to/sudha533/how-to-create-a-env-file-in-an-aspnet-core-web-api-project-and-use-its-values-in-the-application-configuration-fam
-using DotNetEnv;
+
 
 
 namespace SOA_CA2_Cian_Nojus.Data
@@ -27,7 +27,6 @@ namespace SOA_CA2_Cian_Nojus.Data
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DotNetEnv.Env.Load();
 
             modelBuilder.Entity<Games>().HasOne(g => g.Developer)
                 .WithMany(d => d.Games)
