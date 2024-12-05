@@ -6,6 +6,6 @@
         public string name { get; set; }
         public string country { get; set; }
 
-        public List<string>? games { get; set; } = null;
+        public List<String>? games { get; set; } = null;
     }
 }
