@@ -72,7 +72,39 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(developerDTO).State = EntityState.Modified;
+
+            var developer = await _context.Developer.FindAsync(id);
+            if (developer == null)
+            {
+                return NotFound();
+            }
+
+
+
+            developer.name = developerDTO.name;
+            developer.country = developerDTO.country;
+
+
+            if (developerDTO.games != null)
+            {
+                foreach (var gameDTO in developerDTO.games)
+                {
+                    var game = await _context.Games.FindAsync(gameDTO);
+                    if (game != null)
+                    {
+                        _context.Games.Add(new Games
+                        {
+                            title = game.title,
+                            genre = game.genre,
+                            release_year = game.release_year,
+                        });
+                    }
+                }
+            }
+
+            _context.Entry(developer).State = EntityState.Modified;
+
+
 
             try
             {
