@@ -8,6 +8,6 @@
         public int release_year { get; set; }
         public int developer_id { get; set; }
 
-        public List<int>? platforms { get; set; } = null;
+        public List<string>? platforms { get; set; } = null;
     }
 }
