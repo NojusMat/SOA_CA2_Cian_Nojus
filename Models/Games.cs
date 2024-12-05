@@ -2,6 +2,8 @@
 {
     public class Games
     {
+        internal readonly object id;
+
         public int Id { get; set; } // Primary Key
         public string title { get; set; }
         public string genre { get; set; }

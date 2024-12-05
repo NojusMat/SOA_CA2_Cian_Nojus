@@ -7,11 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SOA_CA2_Cian_Nojus.Data;
 using SOA_CA2_Cian_Nojus.Models;
+using SOA_CA2_Cian_Nojus.DTOs;
+using Asp.Versioning;
+using SOA_CA2_Cian_Nojus.Authentication;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
-    [Route("api/users")]
-    [ApiController]
+
+    [Route("api/v{version:apiVersion}/users")]
+    [ApiVersion("1.0")]
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class UsersController : ControllerBase
     {
         private readonly SOA_CA2_Cian_NojusContext _context;
@@ -24,14 +29,19 @@ namespace SOA_CA2_Cian_Nojus.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser()
         {
-            return await _context.User.ToListAsync();
+            return await _context.User.Select(u => new UserDTO
+            {
+                id = u.Id,
+                email = u.email,
+                isAdministrator = u.isAdministrator
+            }).ToListAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
+        public async Task<ActionResult<UserDTO>> GetUserById(int id)
         {
             var user = await _context.User.FindAsync(id);
 
@@ -40,32 +50,54 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return NotFound();
             }
 
-            return user;
+            return new UserDTO
+            {
+                id = user.Id,
+                email = user.email,
+                isAdministrator = user.isAdministrator
+
+            };
         }
 
-		// GET: api/users/login/burneraccount@gmail.com
-		[HttpGet("login/{email}")]
-		public async Task<ActionResult<User>> GetUserByEmail(string email)
+        // GET: api/users/login/{email}
+        [HttpGet("login/{email}")]
+		public async Task<ActionResult<UserDTO>> GetUserByEmail(string email)
 		{
 			// code to find an item by something other than ID was created with help from: https://learn.microsoft.com/en-us/ef/ef6/querying/
+
 			var user = await _context.User.Where(u => u.email == email).FirstOrDefaultAsync();
+
 			if (user == null)
 			{
 				return NotFound();
 			}
 
-			return user;
+            return new UserDTO
+            {
+                id = user.Id,
+                email = user.email,
+                isAdministrator = user.isAdministrator
+            };
 		}
 
 		// PUT: api/Users/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, UserDTO userDTO)
         {
-            if (id != user.Id)
+            if (id != userDTO.id)
             {
                 return BadRequest();
             }
+
+            var user = await _context.User.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.email = userDTO.email;
+            user.isAdministrator = userDTO.isAdministrator;
 
             _context.Entry(user).State = EntityState.Modified;
 
@@ -91,11 +123,16 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<UserDTO>> PostUser(UserDTO userDTO)
         {
+            var user = new User
+            {
+                email = userDTO.email,
+                isAdministrator = userDTO.isAdministrator
+            };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
-
+            userDTO.id = user.Id;
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
