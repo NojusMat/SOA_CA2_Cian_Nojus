@@ -14,7 +14,9 @@ using SOA_CA2_Cian_Nojus.Authentication;
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
 
+    // User controller 
     [Route("api/v{version:apiVersion}/users")]
+    // versioning
     [ApiVersion("1.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class UsersController : ControllerBase
@@ -31,6 +33,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser()
         {
+
+            // Get all users
             return await _context.User.Select(u => new UserDTO
             {
                 id = u.Id,
@@ -43,6 +47,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUserById(int id)
         {
+
+            // Get user by id
             var user = await _context.User.FindAsync(id);
 
             if (user == null)
@@ -99,6 +105,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             user.email = userDTO.email;
             user.isAdministrator = userDTO.isAdministrator;
 
+            // Update user
             _context.Entry(user).State = EntityState.Modified;
 
             try
@@ -130,6 +137,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 email = userDTO.email,
                 isAdministrator = userDTO.isAdministrator
             };
+            // Add user
             _context.User.Add(user);
             await _context.SaveChangesAsync();
             userDTO.id = user.Id;
@@ -146,12 +154,14 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return NotFound();
             }
 
+            // Remove user
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+        // Check if user exists
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.Id == id);

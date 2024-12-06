@@ -14,7 +14,10 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
+    // Developers controller
     [Route("api/v{version:apiVersion}/developers")]
+
+    // versioning
     [ApiVersion("1.0")]
     [ApiController]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
@@ -32,6 +35,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeveloperDTO>>> GetDeveloper()
         {
+
+            // Get all developers
             var developers = await _context.Developer.Include(g => g.Games).ToListAsync();
             return developers.Select(g => new DeveloperDTO
             {
@@ -46,6 +51,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DeveloperDTO>> GetDeveloper(int id)
         {
+            // Get developer by id
             var developer = await _context.Developer.Include(g => g.Games).FirstOrDefaultAsync(d => d.Id == id);
 
             if (developer == null)
@@ -65,6 +71,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         // PUT: api/Developers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+
+        // Update developer
         public async Task<IActionResult> PutDeveloper(int id, DeveloperDTO developerDTO)
         {
             if (id != developerDTO.id)
@@ -72,14 +80,12 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return BadRequest();
             }
 
-
+            // Get developer by id
             var developer = await _context.Developer.FindAsync(id);
             if (developer == null)
             {
                 return NotFound();
             }
-
-
 
             developer.name = developerDTO.name;
             developer.country = developerDTO.country;
@@ -102,6 +108,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 }
             }
 
+            // Update developer
             _context.Entry(developer).State = EntityState.Modified;
 
 
@@ -159,6 +166,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             return NoContent();
         }
 
+        // Check if developer exists
         private bool DeveloperExists(int id)
         {
             return _context.Developer.Any(e => e.Id == id);

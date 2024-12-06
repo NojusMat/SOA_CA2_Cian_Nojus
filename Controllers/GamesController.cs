@@ -14,7 +14,9 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
+    // Games controller
     [Route("api/v{version:apiVersion}/games")]
+    // versioning
     [ApiVersion("2.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class GamesController : ControllerBase
@@ -31,6 +33,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameDTO>>> GetGames()
         {
+            // Get all games
             var games = await _context.Games.Include(d => d.Developer).Include(gp => gp.GamePlatforms).ThenInclude(p => p.Platform).ToListAsync();
 
             var gameDTO = games.Select(d => new GameDTO
@@ -40,6 +43,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 genre = d.genre,
                 release_year = d.release_year,
                 developer_id = d.developer_id,
+                // Get the platforms
                 platforms = d.GamePlatforms.Select(d => d.Platform.name).ToList()
             }).ToList();
 
@@ -50,7 +54,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GameDTO>> GetGames(int id)
         {
-   
+            // Get game by id
             var game = await _context.Games.Include(d => d.Developer).Include(gp => gp.GamePlatforms).ThenInclude( p => p.Platform).FirstOrDefaultAsync(d => d.Id == id);
 
             if (game == null)
@@ -65,6 +69,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 genre = game.genre,
                 release_year = game.release_year,
                 developer_id = game.developer_id,
+                // Get the platforms
                 platforms = game.GamePlatforms.Select(d => d.Platform.name).ToList()
             };
 
@@ -80,6 +85,8 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             {
                 return BadRequest();
             }
+
+            // Get game by id
             var game = await _context.Games.FindAsync(id);
             if (game == null)
             {
@@ -90,7 +97,6 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             game.genre = gameDTO.genre;
             game.release_year = gameDTO.release_year;
             game.developer_id = gameDTO.developer_id;
-
 
             _context.GamePlatform.RemoveRange(game.GamePlatforms);
 
@@ -109,7 +115,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                     }
                 }
             }
-
+            // Update game
             _context.Entry(game).State = EntityState.Modified;
 
             try
@@ -144,6 +150,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 developer_id = gameDTO.developer_id,
             };
 
+            // Add the game
             _context.Games.Add(game);
             await _context.SaveChangesAsync();
 
@@ -163,6 +170,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 }
             }
 
+            // Save the game
             await _context.SaveChangesAsync();
 
             var createdGameDTO = new GameDTO
@@ -189,6 +197,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return NotFound();
             }
 
+            // Remove the game platforms
             _context.GamePlatform.RemoveRange(game.GamePlatforms);
 
             _context.Games.Remove(game);
@@ -197,6 +206,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             return NoContent();
         }
 
+        // Check if game exists
         private bool GamesExists(int id)
         {
             return _context.Games.Any(g => g.Id == id);
