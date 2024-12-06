@@ -1,5 +1,6 @@
 ﻿namespace SOA_CA2_Cian_Nojus.Models
 {
+    // Games model
     public class Games
     {
         internal readonly object id;

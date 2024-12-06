@@ -18,35 +18,40 @@ namespace SOA_CA2_Cian_Nojus.Data
             : base(options)
         {
         }
-
+        // Add the DbSet for the models
         public DbSet<SOA_CA2_Cian_Nojus.Models.Games> Games { get; set; } = default!;
         public DbSet<SOA_CA2_Cian_Nojus.Models.Developer> Developer { get; set; } = default!;
         public DbSet<SOA_CA2_Cian_Nojus.Models.Platform> Platform { get; set; } = default!;
 		public DbSet<SOA_CA2_Cian_Nojus.Models.User> User { get; set; } = default!;
-
-		public DbSet<GamePlatform> GamePlatform { get; set; }
+        public DbSet<GamePlatform> GamePlatform { get; set; }
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            // Set up the many-to-one relationship between games and developers
             modelBuilder.Entity<Games>().HasOne(g => g.Developer)
                 .WithMany(d => d.Games)
                 .HasForeignKey(g => g.developer_id)
                 .IsRequired();
 
+            // Set up the many-to-many relationship between games and platforms
             modelBuilder.Entity<GamePlatform>().
                 HasKey(gp => new { gp.GameId, gp.PlatformId });
 
+
+            // Set up the many-to-many relationship between games and platforms
             modelBuilder.Entity<GamePlatform>().
                 HasOne(gp => gp.Game).
                 WithMany(g => g.GamePlatforms).
                 HasForeignKey(gp => gp.GameId);
 
+            // Set up the many-to-many relationship between platforms and games
             modelBuilder.Entity<GamePlatform>().
                 HasOne(gp => gp.Platform).
                 WithMany(p => p.GamePlatforms).
                 HasForeignKey(gp => gp.PlatformId);
 
+            // Seed the database with games
             modelBuilder.Entity<Games>().HasData(
                 new Games
                 {
@@ -99,6 +104,7 @@ namespace SOA_CA2_Cian_Nojus.Data
                 }
             );
 
+            // Seed the database with developers and platforms
             modelBuilder.Entity<Developer>().HasData(
                 new Developer
                 {
@@ -129,6 +135,7 @@ namespace SOA_CA2_Cian_Nojus.Data
                 }
                 );
 
+            // Seed the database with the many-to-many relationship between games and platforms
             modelBuilder.Entity<GamePlatform>().HasData(
              new GamePlatform { GameId = 1, PlatformId = 1 },
              new GamePlatform { GameId = 2, PlatformId = 1 },
@@ -139,7 +146,8 @@ namespace SOA_CA2_Cian_Nojus.Data
                new GamePlatform { GameId = 6, PlatformId = 2 }
             );
 
-			modelBuilder.Entity<User>().HasData(
+            // Seed the database with an admin user and a regular user
+            modelBuilder.Entity<User>().HasData(
 				new User
 				{
 					Id = 1,

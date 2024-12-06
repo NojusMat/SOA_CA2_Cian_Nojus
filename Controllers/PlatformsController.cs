@@ -13,13 +13,16 @@ using Asp.Versioning;
 
 namespace SOA_CA2_Cian_Nojus.Controllers
 {
+    // platforms controller
     [Route("api/v{version:apiVersion}/platforms")]
+    // versioning
     [ApiVersion("2.0")]
     [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class PlatformsController : ControllerBase
     {
         private readonly SOA_CA2_Cian_NojusContext _context;
 
+        // constructor
         public PlatformsController(SOA_CA2_Cian_NojusContext context)
         {
             _context = context;
@@ -31,8 +34,10 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         public async Task<ActionResult<IEnumerable<PlatformDTO>>> GetPlatform()
         {
 
+            // Get all platforms
             var platform = await _context.Platform.Include(gp => gp.GamePlatforms).ThenInclude(g => g.Game).ToListAsync();
 
+            // Create a list of platform DTOs
             var platformDTO = platform.Select(p => new PlatformDTO
             {
                 id = p.Id,
@@ -49,6 +54,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PlatformDTO>> GetPlatform(int id)
         {
+            // Get platform by id
             var platform = await _context.Platform.Include(gp => gp.GamePlatforms).ThenInclude(g => g.Game).FirstOrDefaultAsync(d => d.Id == id);
 
             if (platform == null)
@@ -77,6 +83,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return BadRequest();
             }
 
+            // Get platform by id
             var platform = await _context.Platform.FindAsync(id);
             if (platform == null)
             {
@@ -86,6 +93,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             platform.name = platformDTO.name;
             platform.manufacturer = platformDTO.manufacturer;
 
+            // Remove all games from the platform
             _context.GamePlatform.RemoveRange(platform.GamePlatforms);
             if(platformDTO.games != null)
             {
@@ -100,6 +108,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 }
             }
 
+            // Update the platform
             _context.Entry(platform).State = EntityState.Modified;
 
             try
@@ -132,6 +141,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 manufacturer = platformDTO.manufacturer
             };
 
+            // Add platform
             _context.Platform.Add(platform);
             await _context.SaveChangesAsync();
 
@@ -147,6 +157,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 }
             }
 
+            // Save the platform
             await _context.SaveChangesAsync();
 
 
@@ -171,6 +182,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
                 return NotFound();
             }
 
+            // Remove all games from the platform
             _context.GamePlatform.RemoveRange(platform.GamePlatforms);
 
             _context.Platform.Remove(platform);
@@ -179,6 +191,7 @@ namespace SOA_CA2_Cian_Nojus.Controllers
             return NoContent();
         }
 
+        // Check if platform exists
         private bool PlatformExists(int id)
         {
             return _context.Platform.Any(e => e.Id == id);

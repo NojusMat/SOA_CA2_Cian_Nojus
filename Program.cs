@@ -53,6 +53,7 @@ builder.Services.AddApiVersioning(options =>
     .AddMvc();
 builder.Services.AddSwaggerGen( c =>
 {
+    // Add a security definition for the ApiKey scheme
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {
         Description = "Api key to access the api",
@@ -78,6 +79,7 @@ builder.Services.AddSwaggerGen( c =>
     c.AddSecurityRequirement(requirement);
 });
 
+// Add the API key authentication filter
 builder.Services.AddScoped<ApiKeyAuthFilter>();
 
 var app = builder.Build();
